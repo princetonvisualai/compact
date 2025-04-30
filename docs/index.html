@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="COMPACT: COMPositional Atomic-to-Complex Visual Capability Tuning">
+  <meta name="keywords" content="COMPACT, AI, Multimodal, Vision, Language, Compositionality">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>COMPACT: COMPositional Atomic-to-Complex Visual Capability Tuning</title>
+
+  <script src="https://kit.fontawesome.com/854f31a6c4.js" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  
+  <style>
+    .header-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .header-container img {
+      height: 50px;
+    }
+    .header-container h1 {
+      margin: 0;
+    }
+    .conference-text {
+      color: #4A90E2;
+      font-weight: bold;
+    }
+    .hero-body {
+      padding: 3rem 1.5rem;
+    }
+    .small-centered-image {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 800px;
+      width: 100%;
+    }
+    .table-container {
+      display: flex;
+      justify-content: center;
+    }
+    .publication-title {
+      font-size: 2.5rem;
+    }
+    .publication-authors {
+      margin-bottom: 1rem;
+    }
+    .publication-links {
+      margin-top: 1.5rem;
+    }
+    .content img {
+      margin: 1.5rem auto;
+      display: block;
+    }
+    .section {
+      padding: 3rem 1.5rem;
+    }
+    .fancy_text_color {
+      color: #4A90E2;
+    }
+    /* Custom styling for pipeline image */
+    .pipeline-image {
+      max-width: 800px;
+      width: 100%;
+      margin: 0 auto 2rem auto;
+    }
+    footer {
+      padding: 3rem 1.5rem 3rem;
+    }
+    /* New styles for side-by-side layout */
+    .flex-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .flex-container img {
+      max-width: 300px; /* Adjust the size as needed */
+      width: 100%;
+    }
+  </style>
+</head>
+  
+<body>
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://princetonvisualai.github.io/compact/">
+        <span class="icon">
+          <i class="fas fa-home"></i>
+        </span>
+      </a>
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">More Research</a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://princetonvisualai.github.io/conceptmix/">ConceptMix</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">COMPACT</h1>
+          <h2 class="subtitle is-3 publication-subtitle">COMPositional Atomic-to-Complex Visual Capability Tuning</h2>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><a href="https://xindiwu.github.io/">Xindi Wu</a><sup>*</sup>,</span>
+            <span class="author-block"><a href="#">Hee Seung Hwang</a><sup>*</sup>,</span>
+            <span class="author-block"><a href="https://polkirichenko.github.io/">Polina Kirichenko</a>,</span>
+            <span class="author-block"><a href="https://www.cs.princeton.edu/~olgarus/">Olga Russakovsky</a></span>
+          </div>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Princeton University, Meta AI</span>
+          </div>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block" style="font-size: 0.9em; color: #666;">* Equal Contribution</span>
+          </div>
+          <div class="is-size-5 publication-authors">
+            <!-- <span class="author-block conference-text">[NeurIPS 2024 D&B]</span> -->
+          </div>
+          <div class="publication-links">
+            <span class="link-block">
+              <a href="#" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="ai ai-arxiv"></i></span>
+                <span>Paper</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a href="https://github.com/princetonvisualai/compact" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="fab fa-github"></i></span>
+                <span>Code</span>
+              </a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- <section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body has-text-centered">
+      <img src="./static/images/1.png" alt="COMPACT Pipeline Figure" class="pipeline-image">
+      <h2 class="subtitle has-text-centered">
+        COMPACT provides a flexible and scalable data recipe for visual compositional tuning.
+      </h2>
+    </div>
+  </div>
+</section> -->
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            <!-- Multimodal Large Language Models (MLLMs) excel at simple vision-language tasks but struggle when faced with complex tasks that require multiple capabilities, such as object recognition, spatial understanding, and counting. Visual Instruction Tuning (VIT), a critical training step for MLLMs, has traditionally focused on scaling data volume, but has overlooked the compositional complexity of training examples, limiting their effectiveness in real-world scenarios.  -->
+          </p>
+          <p>
+            We propose COMPACT (COMPositional Atomic-to-complex Visual Capability Tuning), 
+            a data recipe that explicitly controls for the compositional complexity of the training examples. 
+            COMPACT data allows MLLMs to train on combinations of atomic capabilities to learn complex capabilities more efficiently. 
+            Across complex multi-capability benchmarks, COMPACT outperforms the LLaVA-665K VIT 
+            while using less than 10% of its data budget. 
+          </p>
+          <p>
+            Training on COMPACT data, whose samples require up to three atomic capabilities, 
+            generalizes well to tasks that have even higher capability requirements. 
+            For example, COMPACT achieves a substantial 83.3% improvement on MMStar and 94.0% improvement 
+            on MM-Vet compared to the full-scale VIT on particularly complex questions that require four or more atomic capabilities. 
+            COMPACT offers a scalable, data-efficient, visual compositional tuning recipe to improve on complex visual-language tasks.
+          </p>
+        </div>
+
+        <div class="content has-text-centered">
+          <img src="./static/images/vit_vs_compact.png" alt="Comparison of current VIT and COMPACT" class="small-centered-image">
+          <p>
+            <b>Current Visual Instruction Tuning Data vs. Our Compositional Tuning Data:</b> 
+            The VIT data is dominated by simple queries (k = 1), while our COMPACT data is balanced 
+            across compositional complexity levels (k = 1, 2, 3).
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Method</h2>
+        <div class="content has-text-justified">
+          <p>
+            COMPACT scales capabilities of MLLMs from atomic (k = 1) to composite (k > 1) complexity levels. 
+            Our approach generates multi-capability training data by prompting vision-language models to create questions that 
+            integrate k = (1, 2, 3) atomic visual capabilities.
+          </p>
+          
+          <div class="has-text-centered">
+            <img src="./static/images/pipeline.png" alt="COMPACT Data Generation Pipeline" class="small-centered-image">
+          </div>
+          <p>
+            <b>COMPACT Data Generation Pipeline:</b> (Left): We sample atomic capabilities (k = 1) such as color, object recognition, and spatial relationship. 
+            (Center): We generate questions (k = 1, 2, 3) that integrate all the sampled capabilities. 
+            (Right): We verify the quality of generated conversations and combine them with instruction tuning data to maintain instruction following capability.
+          </p>
+        </div>
+        
+        <h3 class="title is-4">Atomic Visual Capabilities</h3>
+        <div class="content has-text-justified flex-container">
+          <p>
+            Atomic capabilities are foundational skills that can be combined to solve complex tasks. 
+            For example, a model needs to acquire object recognition, color attribution, and spatial relationship understanding capabilities 
+            to identify how objects of different colors are spatially oriented. We define the number of atomic capabilities required to solve 
+            a task as its compositional complexity k.
+          </p>
+          <img src="./static/images/atomic_capabilities.png" alt="Atomic Visual Capabilities" class="small-centered-image">
+        </div>
+        
+        <p>
+          We identify 10 atomic capabilities and categorize them into three groups:
+        </p>
+        
+        <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+          <thead>
+            <tr>
+              <th>Group</th>
+              <th>Capability</th>
+              <th>Definition</th>
+              <th>Example Question</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td rowspan="2">Attribution</td>
+              <td>Color</td>
+              <td>Identifying or comparing colors of objects in the image</td>
+              <td>What color is the car?</td>
+            </tr>
+            <tr>
+              <td>Shape</td>
+              <td>Recognizing and describing the shapes of objects in the image</td>
+              <td>What shape is the dining table?</td>
+            </tr>
+            <tr>
+              <td rowspan="5">Recognition</td>
+              <td>Object Recognition</td>
+              <td>Identifying and naming objects present in the image</td>
+              <td>What object is on the table?</td>
+            </tr>
+            <tr>
+              <td>Action Recognition</td>
+              <td>Identifying what action is being performed</td>
+              <td>What is the person doing in this image?</td>
+            </tr>
+            <tr>
+              <td>Text Recognition</td>
+              <td>Reading and interpreting text visible in the image</td>
+              <td>What word is written on the sign?</td>
+            </tr>
+            <tr>
+              <td>Spatial Recognition</td>
+              <td>Understanding the overall spatial layout and arrangement of the entire scene</td>
+              <td>How is the furniture arranged in this room?</td>
+            </tr>
+            <tr>
+              <td>Counting</td>
+              <td>Determining the number of instances of something in the image</td>
+              <td>How many people are in the room?</td>
+            </tr>
+            <tr>
+              <td rowspan="3">Relation</td>
+              <td>Spatial Relationship</td>
+              <td>Identifying how specific objects are positioned relative to each other</td>
+              <td>What is next to the red car?</td>
+            </tr>
+            <tr>
+              <td>Object Interaction</td>
+              <td>Analyzing how multiple objects interact with each other</td>
+              <td>How is the woman interacting with the laptop?</td>
+            </tr>
+            <tr>
+              <td>Scene Understanding</td>
+              <td>Identifying the type of environment/setting</td>
+              <td>Where is this scene taking place?</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Results</h2>
+        
+        <div class="content has-text-justified">
+          <p>
+            With 32K samples of our compositional tuning data and 5% of the LLaVA-665K VIT data (only 10% of the size of the full VIT dataset), 
+            COMPACT matches the performance of full-scale VIT (100.18% relative score) and demonstrates exceptional generalization to complex tasks.
+          </p>
+        </div>
+
+        <div class="content has-text-justified">
+          <p>
+            <b>Baseline Comparisons:</b> COMPACT (65K) outperforms the random subset of 
+            the VIT data (65K), gradient-based approach selected subset of the VIT data (65K), and even the full VIT data (665K) on 
+            diverse multimodal benchmarks. The best and second best results for each benchmark are shown in <strong>bold</strong> and
+              <u>underlined</u>, respectively. COMPACT integrates atomic capabilities into tasks of higher compositional complexity, 
+              enabling models to generalize and handle complex tasks without explicit decomposition.
+          </p>
+        </div>
+        
+        <div style="overflow-x: auto;">
+          <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+            <thead>
+              <tr>
+                <th>Recipe</th>
+                <th>#Data</th>
+                <th>InfoVQA</th>
+                <th>SeedBench2Plus</th>
+                <th>MME</th>
+                <th>TextVQA</th>
+                <th>MM-Vet</th>
+                <th>CV-Bench</th>
+                <th>MMStar</th>
+                <th>LLaVA-W</th>
+                <th>Rel. (%)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Original</td>
+                <td>665K</td>
+                <td>20.80</td>
+                <td>41.72</td>
+                <td><strong>1478.48</strong></td>
+                <td><strong>46.99</strong></td>
+                <td>29.22</td>
+                <td><strong>60.92</strong></td>
+                <td>35.11</td>
+                <td><strong>68.50</strong></td>
+                <td>100.00</td>
+              </tr>
+              <tr>
+                <td>Random</td>
+                <td>65K</td>
+                <td>20.05</td>
+                <td>41.85</td>
+                <td>1327.70</td>
+                <td>42.88</td>
+                <td>30.46</td>
+                <td>54.71</td>
+                <td>34.13</td>
+                <td>64.30</td>
+                <td>95.38</td>
+              </tr>
+              <tr>
+                <td>ICONS</td>
+                <td>65K</td>
+                <td><u>21.0</u></td>
+                <td><u>42.03</u></td>
+                <td><u>1402.75</u></td>
+                <td>43.12</td>
+                <td><u>31.23</u></td>
+                <td><u>55.96</u></td>
+                <td><u>35.96</u></td>
+                <td>61.8</td>
+                <td>97.47</td>
+              </tr>
+              <tr>
+                <td>COMPACT (ours)</td>
+                <td>65K</td>
+                <td><strong>23.68</strong></td>
+                <td><strong>43.13</strong></td>
+                <td>1379.94</td>
+                <td><u>44.37</u></td>
+                <td><strong>31.74</strong></td>
+                <td>55.28</td>
+                <td><strong>36.13</strong></td>
+                <td><u>64.50</u></td>
+                <td>100.18</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class = "content has-text-justified">
+          <p>
+            <b>Compositional Generalization to Higher Complexities:</b> We compare the performance of COMPACT (65K) and LLaVA-665K VIT (665K) at each 
+            compositional complexity (k) level. COMPACT exceeds the LLaVA-665K baseline at k = (3,4,5) tasks while using significantly less training data.
+          </p>
+          <img src="./static/images/compositional_generalization.png" alt="Compositional Generalization to Higher Complexities" class="small-centered-image">
+        </div>
+
+        <div class = "content has-text-justified">
+          <p>
+            <b>Performance Across Compositional Tuning Data Scales:</b> We fix the VIT subset (5% of LLaVA-665K) and scale the
+            compositional tuning data in COMPACT from 2K to 32K. For comparison, we remove the compositional tuning data and add more VIT data
+            (2K-32K) instead to prepare VIT only baselines with equal data budgets. With much fewer data, COMPACT (solid lines) consistently outperforms the 
+            VIT only baselines (dashed lines). The performance gap is pronounced for complex reasoning benchmarks such as MM-Vet and MMStar,
+            where the 8K COMPACT model often exceeds the VIT only baseline at 32K. This demonstrates the data efficiency of
+            COMPACT, requiring substantially less data than LLaVA-665K VIT to achieve comparable or better results.
+          </p>
+          <img src="./static/images/compositional_data_scale.png" alt="Performance Across Compositional Tuning Data Scales" class="small-centered-image">
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Ablations</h2>
+        
+        <div class="content has-text-justified">
+          <p>
+            We conduct a series of ablation studies to investigate key design considerations in COMPACT.         
+          </p>
+          <p>
+            <b>A. Compositional Complexity Distribution:</b> In order to show that the performance improvement of COMPACT mainly comes from the balanced 
+            distribution of compositional complexity in the compositional tuning data, we analyze the impact on the performance when its compositional 
+            complexity is unbalanced. We generate a 16K-sample compositional tuning data whose distribution of k resembles LLaVA-665K VIT data. 
+            The performance of unbalanced COMPACT (96.28%) is close to random baseline. However, the balanced COMPACT (original) performance jumps to 98.83%, 
+            suggesting that most of the performance gain in COMPACT comes from the fair represenation of higher k samples in the dataset.
+          </p>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+            <thead>
+              <tr>
+                <th>Recipe</th>
+                <th>#Data</th>
+                <th>InfoVQA</th>
+                <th>SeedBench2Plus</th>
+                <th>MME</th>
+                <th>TextVQA</th>
+                <th>MMVet</th>
+                <th>CV-Bench</th>
+                <th>MMStar</th>
+                <th>LLaVA-W</th>
+                <th>Rel. (%)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>LLaVA-665K VIT</td>
+                <td>665K</td>
+                <td>20.80</td>
+                <td>41.72</td>
+                <td>1478.48</td>
+                <td>46.99</td>
+                <td>29.22</td>
+                <td>60.92</td>
+                <td>35.11</td>
+                <td>68.50</td>
+                <td>100.00</td>
+              </tr>
+              <tr>
+                <td>Random</td>
+                <td>49K</td>
+                <td>20.33</td>
+                <td>42.38</td>
+                <td>1290.45</td>
+                <td>42.22</td>
+                <td>30.18</td>
+                <td>54.75</td>
+                <td>34.30</td>
+                <td>70.50</td>
+                <td>96.28</td>
+              </tr>
+              <tr>
+                <td>Unbalanced COMPACT</td>
+                <td>49K</td>
+                <td>22.28</td>
+                <td>41.17</td>
+                <td>1339.24</td>
+                <td>43.08</td>
+                <td>29.22</td>
+                <td>55.84</td>
+                <td>34.80</td>
+                <td>64.50</td>
+                <td>96.62</td>
+              </tr>
+              <tr>
+                <td>Original COMPACT </td>
+                <td>49K</td>
+                <td>22.68</td>
+                <td>42.82</td>
+                <td>1362.68</td>
+                <td>43.73</td>
+                <td>30.78</td>
+                <td>54.69</td>
+                <td>35.59</td>
+                <td>66.60</td>
+                <td>98.83</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex-container">
+          <div class="content has-text-justified" style="flex: 1; padding: 10px;">
+            <p>
+              <b>B. Atomic Capability Coverage:</b> To validate our choice of atomic capabilities and understand their relative importance,
+              we conduct a leave-one-out analysis by systematically excluding questions that require a specific capability while keeping
+              the total number of training examples fixed. The figure shows that each capability contributes meaningfully to overall
+              performance without being redundant. 
+            </p>
+            <img src="./static/images/loo.png" alt="Atomic Capability Coverage" style="width: 100%;">
+          </div>
+
+          <div class="content has-text-justified" style="flex: 1; padding: 10px;">
+            <p>
+              <b>C. Instruction Tuning Ratio:</b> We vary the amount of instruction tuning data sampled from LLaVA-665K VIT to understand the impact 
+              of the mixing ratio on model performance. As we scale the VIT subset from 0% (pure compositional tuning) to 7% of LLaVA-665K VIT, 
+              we observe an upward trend with diminishing returns. These results suggest that instruction following capability is potentailly orthogonal to the 
+              capabilities of the base model and the atomic visual capabilities, and can be acquired with minimal instruction tuning data. 
+            </p>
+            <img src="./static/images/vit_scale.png" alt="VIT Data Ratio" style="width: 100%;">
+          </div>
+        </div>
+
+        <div class="content has-text-justified">
+          <p>
+            <b>D. Compositional Complexity Range:</b> To isolate the effect of the range of compositional complexities while controlling for data quality,
+            we generate three sets of 16K-sample compositional tuning data, each it k=1, k=1,2 and k=1,2,3. For fair comparison, we maintain consistent
+            sample counts and use identical set of images in all three settings. The model trained on k=1,2,3 outperforms other two settings. 
+            Although the model trained on k=1 data can solve tasks with lower compositional complexity, it does not generalize to higher k tasks.
+          </p>
+          <div class="has-text-centered">
+            <img src="./static/images/k_range_scale.png" alt="Compositional Complexity Range" style="max-width: 600px; width: 100%;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Quantitative Comparison</h2>
+        
+        <div class="content has-text-justified">
+          <p>
+            We perform a quantitative analysis comparing COMPACT with LLaVA-665K VIT. COMPACT's compositional tuning data has 
+            a more balanced distribution of capabilities compared to LLaVA-665K VIT. In additional, the bar plot below shows the 
+            distribution of compositional complexity in a random subset of LLaVA-665K VIT data. Unlike COMPACT, where the compositional
+            complexity is designed to be balanced, the compositional complexity in LLaVA-665K VIT data shows a complexity cliff, characterized
+            by a lack of higher k samples.
+          </p>
+          <div class="has-text-centered flex-container">
+            <img src="./static/images/heatmap.png" alt="Capability Distribution" style="max-width: 48%;">
+            <img src="./static/images/llava_k_dist.png" alt="Llava k-distribution" style="max-width: 48%;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- <section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Qualitative Comparison</h2>
+        
+        <div class="content has-text-justified">
+          <p>
+            Below we showcase examples that demonstrate the superior performance of our COMPACT model compared to LLaVA-665K VIT,
+            particularly on complex queries requiring multiple capabilities (k ≥ 3).
+          </p>
+
+          <div class="has-text-centered">
+            <img src="./static/images/qualitative_1.png" alt="Qualitative Examples 1" class="small-centered-image">
+          </div>
+          <div class="has-text-centered">
+            <img src="./static/images/qualitative_2.png" alt="Qualitative Examples 2" class="small-centered-image">
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+<!-- <section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{wu2024compact,
+  title={COMPACT: COMPositional Atomic-to-Complex Visual Capability Tuning},
+  author={Wu, Xindi and Hwang, Hee Seung and Kirichenko, Polina and Russakovsky, Olga},
+  journal={arXiv preprint},
+  year={2025}
+}</code></pre>
+  </div>
+</section> -->
+
+<footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+      <strong>COMPACT</strong> by <a href="https://visualai.princeton.edu/">Princeton University Visual AI Lab</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+    if ($navbarBurgers.length > 0) {
+      $navbarBurgers.forEach(el => {
+        el.addEventListener('click', () => {
+          const target = el.dataset.target;
+          const $target = document.getElementById(target);
+          el.classList.toggle('is-active');
+          $target.classList.toggle('is-active');
+        });
+      });
+    }
+  });
+</script>
+</body>
+</html>
