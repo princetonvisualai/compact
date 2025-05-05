@@ -130,5 +130,10 @@ With only 10% of the data used in LLaVA-665K, COMPACT achieves comparable perfor
 If you find this repository useful for your research, please cite our paper:
 
 ```
-@article{}
+@article{wu2025compact,
+  title={COMPACT: COMPositional Atomic-to-Complex Visual Capability Tuning},
+  author={Wu, Xindi and Hwang, Hee Seung and Kirichenko, Polina and Russakovsky, Olga},
+  journal={arXiv preprint arXiv:2504.21850},
+  year={2025}
+}
 ```
