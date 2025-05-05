@@ -16,7 +16,7 @@
 
 🚧 Under Construction 🚧
 
-[[paper](https://arxiv.org/abs/2501.00654)][[website](https://princetonvisualai.github.io/compact/)]
+[[paper](https://arxiv.org/abs/2504.21850)][[website](https://princetonvisualai.github.io/compact/)]
 
 
 
