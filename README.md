@@ -20,7 +20,9 @@
 
 
 
-Authors: [Xindi Wu](https://xindiwu.github.io/), [Hee Seung Hwang](https://www.linkedin.com/in/willhshwang/), [Polina Kirichenko](https://polkirichenko.github.io/), [Olga Russakovsky](https://www.cs.princeton.edu/~olgarus/)
+Authors: [Xindi Wu](https://xindiwu.github.io/)\*, [Hee Seung Hwang](https://www.linkedin.com/in/willhshwang/)\*, [Polina Kirichenko](https://polkirichenko.github.io/), [Olga Russakovsky](https://www.cs.princeton.edu/~olgarus/)
+
+(* Denotes equal contribution)
 
 We propose COMPACT, a data recipe that scales capabilities of Multimodal Large Language Models (MLLMs) from atomic (k = 1) to complex (k > 1) compositional levels. By creating a training dataset with a balanced distribution of compositional complexity, COMPACT enables models to learn complex capabilities more efficiently.
 
