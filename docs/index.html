@@ -2,147 +2,447 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="description" content="COMPACT: COMPositional Atomic-to-Complex Visual Capability Tuning">
-  <meta name="keywords" content="COMPACT, AI, Multimodal, Vision, Language, Compositionality">
+  <meta name="description" content="Visual Compositional Tuning (COMPACT): a complexity-aware visual instruction tuning recipe that matches LLaVA-665K with 10% of the data.">
+  <meta name="keywords" content="COMPACT, Visual Compositional Tuning, Multimodal, MLLM, Vision-Language, Compositionality, Visual Instruction Tuning, ICLR 2026">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>COMPACT: COMPositional Atomic-to-Complex Visual Capability Tuning</title>
+  <title>Visual Compositional Tuning (COMPACT)</title>
 
   <script src="https://kit.fontawesome.com/854f31a6c4.js" crossorigin="anonymous"></script>
-  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Inter:wght@400;500;600;700;800;900|Google+Sans|Noto+Sans" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  
+
   <style>
-    .header-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
+    :root {
+      --pu-orange: #E77500;
+      --pu-orange-dark: #c05800;
+      --pu-orange-light: #fff8f0;
+      --ink: #111;
+      --muted: #555;
+      --border: #e5e5e5;
     }
-    .header-container img {
-      height: 50px;
+
+    body {
+      font-family: 'Inter', 'Google Sans', 'Noto Sans', -apple-system, sans-serif;
+      color: #222;
+      background: #fff;
     }
-    .header-container h1 {
-      margin: 0;
-    }
-    .conference-text {
-      color: #4A90E2;
-      font-weight: bold;
-    }
-    .hero-body {
-      padding: 3rem 1.5rem;
-    }
-    .small-centered-image {
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-      max-width: 800px;
-      width: 100%;
-    }
-    .table-container {
-      display: flex;
-      justify-content: center;
+
+    .navbar { border-bottom: 1px solid var(--border); }
+    .navbar-item i { color: var(--pu-orange); }
+
+    /* ── Hero ── */
+    .hero-band {
+      background: linear-gradient(135deg, #fffdf8 0%, #fff3e0 100%);
+      border-bottom: 4px solid var(--pu-orange);
     }
     .publication-title {
-      font-size: 2.5rem;
+      font-size: 3.2rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      line-height: 1.05;
+      margin-bottom: 0.6rem;
+    }
+    .publication-title .compact-mark {
+      color: var(--pu-orange);
+    }
+    .publication-subtitle {
+      font-size: 1.15rem;
+      color: var(--muted);
+      font-weight: 500;
+      margin-bottom: 1.4rem;
+    }
+    .venue-pill {
+      display: inline-block;
+      background: var(--pu-orange);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 1.2rem;
+      text-transform: uppercase;
     }
     .publication-authors {
-      margin-bottom: 1rem;
+      font-size: 1.05rem;
+      color: #333;
+      margin-bottom: 0.3rem;
     }
-    .publication-links {
+    .publication-authors a { color: #0a4b91; text-decoration: none; }
+    .publication-authors a:hover { text-decoration: underline; }
+    .publication-affil {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 0.2rem;
+    }
+    .equal-note { font-size: 0.85rem; color: #888; }
+
+    .publication-links { margin-top: 1.6rem; }
+    .publication-links .button {
+      background: var(--ink);
+      color: #fff;
+      border: none;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+    .publication-links .button:hover {
+      background: var(--pu-orange);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    /* ── Sections ── */
+    .section { padding: 3rem 1.5rem; }
+    .section-alt { background: #fafafa; }
+    .section h2.title.is-3 {
+      font-weight: 800;
+      color: var(--ink);
+      position: relative;
+      display: inline-block;
+      padding-bottom: 6px;
+    }
+    .section h2.title.is-3::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 0;
+      width: 60px;
+      height: 4px;
+      background: var(--pu-orange);
+      border-radius: 2px;
+    }
+    .content p { font-size: 1.02rem; line-height: 1.7; }
+    .content img { margin: 1.2rem auto; display: block; }
+
+    /* ── Key claim banner ── */
+    .claim-banner {
+      background: linear-gradient(135deg, var(--pu-orange-light) 0%, #ffe8c8 100%);
+      border: 2px solid var(--pu-orange);
+      border-radius: 16px;
+      padding: 1.8rem 2rem;
+      text-align: center;
+      box-shadow: 0 4px 18px rgba(231,117,0,0.12);
+    }
+    .claim-banner .claim {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.45;
+    }
+    .claim-banner .claim .hl {
+      background: #ffe0b2;
+      padding: 0 6px;
+      border-radius: 4px;
+    }
+    .claim-banner .claim .muted-mark {
+      background: #e0e0e0;
+      padding: 0 6px;
+      border-radius: 4px;
+    }
+
+    /* ── Metric cards ── */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
       margin-top: 1.5rem;
     }
-    .content img {
-      margin: 1.5rem auto;
-      display: block;
+    .metric-card {
+      border: 2px solid var(--pu-orange);
+      border-radius: 12px;
+      padding: 18px 12px;
+      text-align: center;
+      background: linear-gradient(135deg, #fff8f0, #ffffff);
+      box-shadow: 0 2px 8px rgba(231,117,0,0.1);
     }
-    .section {
-      padding: 3rem 1.5rem;
+    .metric-card .val {
+      font-size: 2.1rem;
+      font-weight: 900;
+      color: var(--pu-orange);
+      line-height: 1;
+      margin-bottom: 6px;
     }
-    .fancy_text_color {
-      color: #4A90E2;
+    .metric-card .lbl {
+      font-size: 0.78rem;
+      color: #333;
+      line-height: 1.35;
+      font-weight: 500;
     }
-    /* Custom styling for pipeline image */
-    .pipeline-image {
-      max-width: 800px;
+    @media (max-width: 768px) { .metric-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    /* ── Figure caption ── */
+    .fig-caption {
+      font-size: 0.93rem;
+      color: var(--muted);
+      line-height: 1.55;
+      text-align: center;
+      max-width: 860px;
+      margin: 0.6rem auto 0;
+    }
+    .fig-caption b { color: var(--ink); }
+
+    /* ── Pipeline/teaser images ── */
+    .paper-image {
+      max-width: 100%;
       width: 100%;
-      margin: 0 auto 2rem auto;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      border: 1px solid #eee;
     }
-    footer {
-      padding: 3rem 1.5rem 3rem;
+    .image-frame {
+      max-width: 920px;
+      margin: 0 auto;
     }
-    /* New styles for side-by-side layout */
-    .flex-container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
+
+    /* ── Tables ── */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 10px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.06);
     }
-    .flex-container img {
-      max-width: 300px; /* Adjust the size as needed */
+    table.results-table {
       width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      font-size: 0.93rem;
     }
+    table.results-table th {
+      background: var(--pu-orange);
+      color: #fff;
+      padding: 10px 8px;
+      text-align: center;
+      font-weight: 700;
+    }
+    table.results-table td {
+      padding: 9px 8px;
+      text-align: center;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    table.results-table td:first-child { text-align: left; font-weight: 500; }
+    table.results-table tr.baseline td { background: #f7f7f7; }
+    table.results-table tr.ours td {
+      background: var(--pu-orange-light);
+      font-weight: 700;
+      border-top: 2px solid var(--pu-orange);
+      border-bottom: 2px solid var(--pu-orange);
+    }
+    table.results-table tr.ours td:first-child { color: var(--pu-orange); border-left: 4px solid var(--pu-orange); }
+    table.results-table .best { color: var(--pu-orange); font-weight: 700; }
+    table.results-table .second { text-decoration: underline; }
+
+    /* ── Capabilities table ── */
+    table.cap-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      font-size: 0.93rem;
+    }
+    table.cap-table th {
+      background: var(--pu-orange);
+      color: #fff;
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 700;
+    }
+    table.cap-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #f0f0f0;
+      vertical-align: top;
+    }
+    table.cap-table tr:nth-child(even) td { background: #fafafa; }
+    table.cap-table td.group {
+      color: var(--pu-orange);
+      font-weight: 700;
+      background: #fff8f0 !important;
+      white-space: nowrap;
+    }
+
+    /* ── k-value example cards ── */
+    .k-examples {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 1.2rem 0;
+    }
+    @media (max-width: 768px) { .k-examples { grid-template-columns: 1fr; } }
+    .k-card {
+      border: 2px solid var(--pu-orange);
+      border-radius: 10px;
+      padding: 14px 16px;
+      background: #fff8f0;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    .k-card .k-label {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--pu-orange);
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+    .k-card .k-q {
+      font-size: 0.98rem;
+      color: #222;
+      font-style: italic;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+    .k-card .k-caps {
+      font-size: 0.78rem;
+      color: #888;
+      border-top: 1px solid #f0e0c8;
+      padding-top: 6px;
+    }
+
+    /* ── Distribution shift table ── */
+    table.dist-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      font-size: 0.95rem;
+    }
+    table.dist-table th {
+      background: var(--pu-orange);
+      color: #fff;
+      padding: 10px 12px;
+      text-align: center;
+      font-weight: 700;
+    }
+    table.dist-table th:first-child { text-align: left; }
+    table.dist-table td {
+      padding: 10px 12px;
+      text-align: center;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    table.dist-table td:first-child { text-align: left; font-weight: 500; }
+    table.dist-table td.compact-val {
+      color: var(--pu-orange);
+      font-weight: 700;
+    }
+
+    /* ── Zero-cap samples ── */
+    .zero-cap-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 1rem;
+    }
+    @media (max-width: 768px) { .zero-cap-list { grid-template-columns: 1fr; } }
+    .zero-cap-item {
+      background: #fef5f5;
+      border-left: 4px solid #c0392b;
+      border-radius: 4px;
+      padding: 10px 14px;
+      font-style: italic;
+      font-size: 0.93rem;
+      color: #555;
+    }
+
+    /* ── Takeaways ── */
+    .takeaway-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 1rem;
+    }
+    @media (max-width: 768px) { .takeaway-grid { grid-template-columns: 1fr; } }
+    .takeaway {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-left: 5px solid var(--pu-orange);
+      border-radius: 6px;
+      padding: 14px 18px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      font-size: 0.98rem;
+      line-height: 1.55;
+    }
+    .takeaway .tk-hl { color: var(--pu-orange); font-weight: 700; }
+
+    /* ── BibTeX block ── */
+    pre.bibtex {
+      background: #282c34;
+      color: #e8e8e8;
+      padding: 1.2rem 1.4rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+
+    /* ── Two-col layout ── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+    @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+
+    footer { padding: 2.5rem 1.5rem; background: #fafafa; border-top: 1px solid var(--border); }
+    footer a { color: var(--pu-orange); }
   </style>
 </head>
-  
+
 <body>
+
 <nav class="navbar" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
-    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
-  </div>
   <div class="navbar-menu">
     <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
-      <a class="navbar-item" href="https://princetonvisualai.github.io/compact/">
-        <span class="icon">
-          <i class="fas fa-home"></i>
-        </span>
-      </a>
-      <div class="navbar-item has-dropdown is-hoverable">
-        <a class="navbar-link">More Research</a>
-        <div class="navbar-dropdown">
-          <a class="navbar-item" href="https://visualai.princeton.edu/#research">Princeton Visual AI Lab</a>
-        </div>
-      </div>
+      <a class="navbar-item" href="#top"><span class="icon"><i class="fas fa-home"></i></span></a>
+      <a class="navbar-item" href="#abstract">Abstract</a>
+      <a class="navbar-item" href="#method">Method</a>
+      <a class="navbar-item" href="#results">Results</a>
+      <a class="navbar-item" href="#analysis">Analysis</a>
+      <a class="navbar-item" href="#ablations">Ablations</a>
+      <a class="navbar-item" href="#bibtex">BibTeX</a>
     </div>
   </div>
 </nav>
 
-<section class="hero">
+<!-- ── Hero ── -->
+<section class="hero hero-band" id="top">
   <div class="hero-body">
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <h1 class="title is-1 publication-title">COMPACT</h1>
-          <h2 class="subtitle is-3 publication-subtitle">COMPositional Atomic-to-Complex Visual Capability Tuning</h2>
-          <div class="is-size-5 publication-authors">
-            <span class="author-block"><a href="https://xindiwu.github.io/">Xindi Wu</a><sup>*</sup>,</span>
-            <span class="author-block"><a href="#">Hee Seung Hwang</a><sup>*</sup>,</span>
-            <span class="author-block"><a href="https://polkirichenko.github.io/">Polina Kirichenko</a>,</span>
-            <span class="author-block"><a href="https://www.cs.princeton.edu/~olgarus/">Olga Russakovsky</a></span>
+          <div class="venue-pill">ICLR 2026</div>
+          <h1 class="publication-title">
+            Visual Compositional Tuning
+          </h1>
+          <div class="publication-subtitle">
+            <b><span class="compact-mark" style="color: var(--pu-orange);">COMPACT</span></b>: <b>COMP</b>ositional <b>A</b>tomic-to-complex Visual <b>C</b>ompositional <b>T</b>uning
           </div>
-          <div class="is-size-5 publication-authors">
-            <span class="author-block">Princeton University, Meta AI</span>
+
+          <div class="publication-authors">
+            <a href="https://xindiwu.github.io/">Xindi Wu</a><sup>1*</sup> &nbsp;
+            <a href="#">Hee Seung Hwang</a><sup>1*</sup> &nbsp;
+            <a href="https://polkirichenko.github.io/">Polina Kirichenko</a><sup>2</sup> &nbsp;
+            <a href="#">Esin Tureci</a><sup>1</sup> &nbsp;
+            <a href="https://www.cs.princeton.edu/~olgarus/">Olga Russakovsky</a><sup>1</sup>
           </div>
-          <div class="is-size-5 publication-authors">
-            <span class="author-block" style="font-size: 0.9em; color: #666;">* Equal Contribution</span>
+          <div class="publication-affil">
+            <sup>1</sup>Princeton University &nbsp;&nbsp; <sup>2</sup>Meta AI
           </div>
-          <div class="is-size-5 publication-authors">
-            <!-- <span class="author-block conference-text">[NeurIPS 2024 D&B]</span> -->
-          </div>
+          <div class="equal-note">* Equal contribution</div>
+
           <div class="publication-links">
             <span class="link-block">
-              <a href="https://arxiv.org/abs/2504.21850" class="external-link button is-normal is-rounded is-dark">
+              <a href="https://arxiv.org/abs/2504.21850" class="external-link button is-normal is-rounded">
                 <span class="icon"><i class="ai ai-arxiv"></i></span>
-                <span>Paper</span>
+                <span>arXiv</span>
               </a>
             </span>
             <span class="link-block">
-              <a href="https://github.com/princetonvisualai/compact" class="external-link button is-normal is-rounded is-dark">
+              <a href="./static/data/COMPACT.pdf" class="external-link button is-normal is-rounded">
+                <span class="icon"><i class="fas fa-image"></i></span>
+                <span>Poster</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a href="https://github.com/princetonvisualai/compact" class="external-link button is-normal is-rounded">
                 <span class="icon"><i class="fab fa-github"></i></span>
                 <span>Code</span>
               </a>
@@ -154,48 +454,55 @@
   </div>
 </section>
 
-<!-- <section class="hero teaser">
+<!-- ── Key claim ── -->
+<section class="section" style="padding-top: 2.5rem;">
   <div class="container is-max-desktop">
-    <div class="hero-body has-text-centered">
-      <img src="./static/images/1.png" alt="COMPACT Pipeline Figure" class="pipeline-image">
-      <h2 class="subtitle has-text-centered">
-        COMPACT provides a flexible and scalable data recipe for visual compositional tuning.
-      </h2>
+    <div class="claim-banner">
+      <div class="claim">
+        Scaling <span class="hl">data <em>complexity</em></span> is more effective than scaling <span class="muted-mark">data <em>volume</em></span>
+      </div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric-card">
+        <div class="val">100.2%</div>
+        <div class="lbl">of full LLaVA-665K<br>with only <b>10%</b> of the data</div>
+      </div>
+      <div class="metric-card">
+        <div class="val">+8.6%</div>
+        <div class="lbl">MM-Vet<br>over full 665K VIT</div>
+      </div>
+      <div class="metric-card">
+        <div class="val">+13.8%</div>
+        <div class="lbl">InfoVQA<br>over full 665K VIT</div>
+      </div>
+      <div class="metric-card">
+        <div class="val">+33.5%</div>
+        <div class="lbl">on k=4 complex<br>test questions</div>
+      </div>
     </div>
   </div>
-</section> -->
+</section>
 
-<section class="section">
+<!-- ── Abstract ── -->
+<section class="section section-alt" id="abstract">
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
         <h2 class="title is-3">Abstract</h2>
-        <div class="content has-text-justified">
+        <div class="content has-text-justified" style="margin-top: 1.5rem;">
           <p>
-            <!-- Multimodal Large Language Models (MLLMs) excel at simple vision-language tasks but struggle when faced with complex tasks that require multiple capabilities, such as object recognition, spatial understanding, and counting. Visual Instruction Tuning (VIT), a critical training step for MLLMs, has traditionally focused on scaling data volume, but has overlooked the compositional complexity of training examples, limiting their effectiveness in real-world scenarios.  -->
+            Visual instruction tuning (VIT) datasets have grown rapidly in scale, yet the <b>informativeness</b> of individual training samples has largely been overlooked. We explore the impact of sample complexity on data curation and introduce <b style="color:var(--pu-orange);">COMPACT</b> (<b>COMP</b>ositional <b>A</b>tomic-to-complex Visual <b>C</b>ompositional <b>T</b>uning), a visual compositional tuning data recipe that scales training sample complexity by combining multiple atomic visual capabilities in a single training example.
           </p>
           <p>
-            We propose COMPACT (COMPositional Atomic-to-complex Visual Capability Tuning), 
-            a data recipe that explicitly controls for the compositional complexity of the training examples. 
-            COMPACT data allows MLLMs to train on combinations of atomic capabilities to learn complex capabilities more efficiently. 
-            Across complex multi-capability benchmarks, COMPACT outperforms the LLaVA-665K VIT 
-            while using less than 10% of its data budget. 
-          </p>
-          <p>
-            Training on COMPACT data, whose samples require up to three atomic capabilities, 
-            generalizes well to tasks that have even higher capability requirements. 
-            For example, COMPACT achieves a substantial 83.3% improvement on MMStar and 94.0% improvement 
-            on MM-Vet compared to the full-scale VIT on particularly complex questions that require four or more atomic capabilities. 
-            COMPACT offers a scalable, data-efficient, visual compositional tuning recipe to improve on complex visual-language tasks.
+            When applied to the LLaVA-665K VIT dataset, COMPACT reduces the data budget by <b>90%</b> while still achieving <b>100.2%</b> of the full VIT performance (compared to only 97.5% by the state-of-the-art method) across eight multimodal benchmarks. Training on COMPACT data <em>outperforms</em> training on the full-scale VIT data on complex benchmarks such as <b>MM-Vet (+8.6%)</b> and <b>MMStar (+2.9%)</b>, offering a scalable and efficient synthetic data generation recipe for vision-language tasks.
           </p>
         </div>
 
-        <div class="content has-text-centered">
-          <img src="./static/images/vit_vs_compact.png" alt="Comparison of current VIT and COMPACT" class="small-centered-image">
-          <p>
-            <b>Current Visual Instruction Tuning Data vs. Our Compositional Tuning Data:</b> 
-            The VIT data is dominated by simple queries (k = 1), while our COMPACT data is balanced 
-            across compositional complexity levels (k = 1, 2, 3).
+        <div class="image-frame" style="margin-top: 2rem;">
+          <img src="./static/images/paper/0_teaser_k+1.png" alt="Teaser: effect of k-value on downstream performance" class="paper-image">
+          <p class="fig-caption">
+            <b>Complexity <em>k</em>.</b> Increasing the complexity of LLaVA samples improves downstream performance. We define <em>k</em> as the number of atomic visual capabilities required to answer a question. Existing VIT datasets are dominated by simple (k ≤ 2) questions; augmenting samples with one additional capability (LLaVA<sub>k+1</sub>) shifts the distribution rightward and boosts accuracy.
           </p>
         </div>
       </div>
@@ -203,359 +510,275 @@
   </div>
 </section>
 
-<section class="section">
+<!-- ── Method ── -->
+<section class="section" id="method">
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
         <h2 class="title is-3">Method</h2>
+
+        <div class="content has-text-justified" style="margin-top: 1.5rem;">
+          <p>
+            COMPACT is a four-step compositional data recipe that scales the <em>complexity</em> of training samples by combining atomic visual capabilities. Instead of chasing quantity, COMPACT asks a more information-dense question for each image, lifting the average <em>k</em>-value of the training data.
+          </p>
+        </div>
+
+        <div class="image-frame">
+          <img src="./static/images/paper/1_pipeline.png" alt="COMPACT Data Generation Pipeline" class="paper-image">
+          <p class="fig-caption">
+            <b>COMPACT data generation pipeline.</b> <i>(Left)</i> We uniformly sample <em>k</em><sub>gen</sub> ∈ {1, 2, 3} atomic capabilities for each image. <i>(Center)</i> We prompt Gemini-2.0-Flash to generate questions that naturally integrate all sampled capabilities and verify their quality. <i>(Right)</i> We combine the synthetic compositional tuning data with a small 5% VIT subset for response formatting.
+          </p>
+        </div>
+
+        <h3 class="title is-4" style="margin-top: 3rem; color: var(--ink);">Compositional complexity <em>k</em></h3>
         <div class="content has-text-justified">
           <p>
-            COMPACT scales capabilities of MLLMs from atomic (k = 1) to composite (k > 1) complexity levels. 
-            Our approach generates multi-capability training data by prompting vision-language models to create questions that 
-            integrate k = (1, 2, 3) atomic visual capabilities.
+            For a task <em>T</em>, the number of atomic visual capabilities <em>{c<sub>1</sub>, …, c<sub>k</sub>}</em> required to solve it defines its <b>compositional complexity <em>k</em></b>. A higher <em>k</em> implies a more information-dense question that forces the model to actually use the visual content.
           </p>
-          
-          <div class="has-text-centered">
-            <img src="./static/images/pipeline.png" alt="COMPACT Data Generation Pipeline" class="small-centered-image">
+        </div>
+
+        <div class="k-examples">
+          <div class="k-card">
+            <div class="k-label">k = 1 (simple)</div>
+            <div class="k-q">"What color is the car?"</div>
+            <div class="k-caps">color</div>
           </div>
+          <div class="k-card">
+            <div class="k-label">k = 2</div>
+            <div class="k-q">"What color is the car on the left?"</div>
+            <div class="k-caps">color + spatial relationship</div>
+          </div>
+          <div class="k-card">
+            <div class="k-label">k = 3 (COMPACT)</div>
+            <div class="k-q">"What color is the object on the left side of the car?"</div>
+            <div class="k-caps">object recognition + spatial relationship + color</div>
+          </div>
+        </div>
+
+        <h3 class="title is-4" style="margin-top: 3rem; color: var(--ink);">10 Atomic Visual Capabilities</h3>
+        <div class="content has-text-justified">
           <p>
-            <b>COMPACT Data Generation Pipeline:</b> (Left): We sample atomic capabilities (k = 1) such as color, object recognition, and spatial relationship. 
-            (Center): We generate questions (k = 1, 2, 3) that integrate all the sampled capabilities. 
-            (Right): We verify the quality of generated conversations and combine them with instruction tuning data to maintain instruction following capability.
+            We identify <b>10</b> vision-centric atomic capabilities grouped into three categories: <b>Attribution</b>, <b>Recognition</b>, and <b>Relation</b>. These are the building blocks COMPACT combines to synthesize complex training questions.
           </p>
         </div>
-        
-        <h3 class="title is-4">Atomic Visual Capabilities</h3>
-        <div class="content has-text-justified flex-container">
-          <p>
-            Atomic capabilities are foundational skills that can be combined to solve complex tasks. 
-            For example, a model needs to acquire object recognition, color attribution, and spatial relationship understanding capabilities 
-            to identify how objects of different colors are spatially oriented. We define the number of atomic capabilities required to solve 
-            a task as its compositional complexity k.
-          </p>
-          <img src="./static/images/atomic_capabilities.png" alt="Atomic Visual Capabilities" class="small-centered-image">
+
+        <div class="table-wrap">
+          <table class="cap-table">
+            <thead>
+              <tr><th>Group</th><th>Capability</th><th>Definition</th><th>Example Question</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="group" rowspan="2">Attribution</td><td>Color</td><td>Identifying or comparing colors of objects.</td><td>"What color is the car?"</td></tr>
+              <tr><td>Shape</td><td>Recognizing and describing shapes of objects.</td><td>"What shape is the dining table?"</td></tr>
+              <tr><td class="group" rowspan="5">Recognition</td><td>Object Recognition</td><td>Identifying and naming objects present in the image.</td><td>"What object is on the table?"</td></tr>
+              <tr><td>Action Recognition</td><td>Identifying what action is being performed.</td><td>"What is the person doing?"</td></tr>
+              <tr><td>Text Recognition</td><td>Reading and interpreting text visible in the image.</td><td>"What word is written on the sign?"</td></tr>
+              <tr><td>Spatial Recognition</td><td>Understanding the overall scene layout.</td><td>"How is the furniture arranged in the room?"</td></tr>
+              <tr><td>Counting</td><td>Determining the number of instances.</td><td>"How many people are in the room?"</td></tr>
+              <tr><td class="group" rowspan="3">Relation</td><td>Spatial Relationship</td><td>Identifying how objects are positioned relative to each other.</td><td>"What is next to the red car?"</td></tr>
+              <tr><td>Object Interaction</td><td>Analyzing how multiple objects interact.</td><td>"How is the woman interacting with the laptop?"</td></tr>
+              <tr><td>Scene Understanding</td><td>Identifying the type of environment/setting.</td><td>"Where is this scene taking place?"</td></tr>
+            </tbody>
+          </table>
         </div>
-        
-        <p>
-          We identify 10 atomic capabilities and categorize them into three groups:
-        </p>
-        
-        <table class="table is-bordered is-striped is-hoverable is-fullwidth">
-          <thead>
-            <tr>
-              <th>Group</th>
-              <th>Capability</th>
-              <th>Definition</th>
-              <th>Example Question</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td rowspan="2">Attribution</td>
-              <td>Color</td>
-              <td>Identifying or comparing colors of objects in the image</td>
-              <td>What color is the car?</td>
-            </tr>
-            <tr>
-              <td>Shape</td>
-              <td>Recognizing and describing the shapes of objects in the image</td>
-              <td>What shape is the dining table?</td>
-            </tr>
-            <tr>
-              <td rowspan="5">Recognition</td>
-              <td>Object Recognition</td>
-              <td>Identifying and naming objects present in the image</td>
-              <td>What object is on the table?</td>
-            </tr>
-            <tr>
-              <td>Action Recognition</td>
-              <td>Identifying what action is being performed</td>
-              <td>What is the person doing in this image?</td>
-            </tr>
-            <tr>
-              <td>Text Recognition</td>
-              <td>Reading and interpreting text visible in the image</td>
-              <td>What word is written on the sign?</td>
-            </tr>
-            <tr>
-              <td>Spatial Recognition</td>
-              <td>Understanding the overall spatial layout and arrangement of the entire scene</td>
-              <td>How is the furniture arranged in this room?</td>
-            </tr>
-            <tr>
-              <td>Counting</td>
-              <td>Determining the number of instances of something in the image</td>
-              <td>How many people are in the room?</td>
-            </tr>
-            <tr>
-              <td rowspan="3">Relation</td>
-              <td>Spatial Relationship</td>
-              <td>Identifying how specific objects are positioned relative to each other</td>
-              <td>What is next to the red car?</td>
-            </tr>
-            <tr>
-              <td>Object Interaction</td>
-              <td>Analyzing how multiple objects interact with each other</td>
-              <td>How is the woman interacting with the laptop?</td>
-            </tr>
-            <tr>
-              <td>Scene Understanding</td>
-              <td>Identifying the type of environment/setting</td>
-              <td>Where is this scene taking place?</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </div>
   </div>
 </section>
 
-<section class="section">
+<!-- ── Results ── -->
+<section class="section section-alt" id="results">
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">Results</h2>
-        
-        <div class="content has-text-justified">
+        <h2 class="title is-3">Main Results</h2>
+
+        <div class="content has-text-justified" style="margin-top: 1.5rem;">
           <p>
-            With 32K samples of our compositional tuning data and 5% of the LLaVA-665K VIT data (only 10% of the size of the full VIT dataset), 
-            COMPACT matches the performance of full-scale VIT (100.18% relative score) and demonstrates exceptional generalization to complex tasks.
+            With <b>32K</b> compositional tuning samples + <b>5%</b> LLaVA-665K VIT (≈65K total — <b>10%</b> of the full VIT budget), COMPACT matches full-scale VIT performance (100.2% relative score) and outperforms strong data-selection baselines including EL2N, D2-Pruning, and ICONS on 8 multimodal benchmarks.
           </p>
         </div>
 
-        <div class="content has-text-justified">
-          <p>
-            <b>Baseline Comparisons:</b> COMPACT (65K) outperforms the random subset of 
-            the VIT data (65K), gradient-based approach selected subset of the VIT data (65K), and even the full VIT data (665K) on 
-            diverse multimodal benchmarks. The best and second best results for each benchmark are shown in <strong>bold</strong> and
-              <u>underlined</u>, respectively. COMPACT integrates atomic capabilities into tasks of higher compositional complexity, 
-              enabling models to generalize and handle complex tasks without explicit decomposition.
-          </p>
-        </div>
-        
-        <div style="overflow-x: auto;">
-          <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+        <div class="table-wrap">
+          <table class="results-table">
             <thead>
               <tr>
-                <th>Recipe</th>
-                <th>#Data</th>
-                <th>InfoVQA</th>
-                <th>SeedBench2Plus</th>
-                <th>MME</th>
-                <th>TextVQA</th>
-                <th>MM-Vet</th>
-                <th>CV-Bench</th>
-                <th>MMStar</th>
-                <th>LLaVA-W</th>
-                <th>Rel. (%)</th>
+                <th>Method</th><th>#Data</th><th>InfoVQA</th><th>SeedB2+</th><th>MME</th>
+                <th>TextVQA</th><th>MM-Vet</th><th>CV-Bench</th><th>MMStar</th><th>LLaVA-W</th><th>Rel. (%)</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Original</td>
-                <td>665K</td>
-                <td>20.80</td>
-                <td>41.72</td>
-                <td><strong>1478.48</strong></td>
-                <td><strong>46.99</strong></td>
-                <td>29.22</td>
-                <td><strong>60.92</strong></td>
-                <td>35.11</td>
-                <td><strong>68.50</strong></td>
-                <td>100.00</td>
+              <tr class="baseline">
+                <td>LLaVA-665K (full)</td><td>665K</td>
+                <td>20.80</td><td>41.72</td><td class="best">1478.48</td><td class="best">46.99</td>
+                <td>29.22</td><td class="best">60.92</td><td>35.11</td><td class="best">68.50</td><td>100.0</td>
               </tr>
               <tr>
-                <td>Random</td>
-                <td>65K</td>
-                <td>20.05</td>
-                <td>41.85</td>
-                <td>1327.70</td>
-                <td>42.88</td>
-                <td>30.46</td>
-                <td>54.71</td>
-                <td>34.13</td>
-                <td>64.30</td>
-                <td>95.38</td>
+                <td>Random</td><td>65K</td>
+                <td>20.05</td><td>41.85</td><td>1327.70</td><td>42.88</td>
+                <td>30.46</td><td>54.71</td><td>34.13</td><td>64.30</td><td>95.4</td>
               </tr>
               <tr>
-                <td>ICONS</td>
-                <td>65K</td>
-                <td><u>21.0</u></td>
-                <td><u>42.03</u></td>
-                <td><u>1402.75</u></td>
-                <td>43.12</td>
-                <td><u>31.23</u></td>
-                <td><u>55.96</u></td>
-                <td><u>35.96</u></td>
-                <td>61.8</td>
-                <td>97.47</td>
+                <td>EL2N</td><td>65K</td>
+                <td>20.52</td><td>42.95</td><td>1350.10</td><td>42.41</td>
+                <td>33.53</td><td>50.92</td><td>33.82</td><td>62.30</td><td>97.1</td>
               </tr>
               <tr>
-                <td>COMPACT (ours)</td>
-                <td>65K</td>
-                <td><strong>23.68</strong></td>
-                <td><strong>43.13</strong></td>
-                <td>1379.94</td>
-                <td><u>44.37</u></td>
-                <td><strong>31.74</strong></td>
-                <td>55.28</td>
-                <td><strong>36.13</strong></td>
-                <td><u>64.50</u></td>
-                <td>100.18</td>
+                <td>D2-Pruning</td><td>65K</td>
+                <td>20.90</td><td class="best">43.70</td><td>1362.30</td><td>41.82</td>
+                <td>31.61</td><td>48.49</td><td class="best">36.63</td><td>61.80</td><td>97.1</td>
+              </tr>
+              <tr>
+                <td>ICONS</td><td>65K</td>
+                <td class="second">21.00</td><td>42.03</td><td class="second">1402.75</td><td>43.12</td>
+                <td class="second">31.23</td><td class="second">55.96</td><td class="second">35.96</td><td>61.80</td><td>97.5</td>
+              </tr>
+              <tr class="ours">
+                <td>COMPACT (ours)</td><td>65K</td>
+                <td class="best">23.68</td><td class="second">43.13</td><td>1379.94</td><td class="second">44.37</td>
+                <td class="best">31.74</td><td>55.28</td><td class="second">36.13</td><td class="second">64.50</td><td class="best">100.2</td>
               </tr>
             </tbody>
           </table>
         </div>
+        <p class="fig-caption" style="margin-top: 0.8rem;">
+          <b>Main comparison.</b> COMPACT (65K) outperforms all 65K data-selection baselines and matches the full 665K VIT baseline. <b>Bold</b> indicates best, <u>underline</u> second best.
+        </p>
 
-        <div class = "content has-text-justified">
-          <p>
-            <b>Compositional Generalization to Higher Complexities:</b> We compare the performance of COMPACT (65K) and LLaVA-665K VIT (665K) at each 
-            compositional complexity (k) level. COMPACT exceeds the LLaVA-665K baseline at k = (3,4,5) tasks while using significantly less training data.
+        <div class="image-frame" style="margin-top: 3rem;">
+          <img src="./static/images/paper/17_multi_task_performance.png" alt="Performance across compositional tuning data scales" class="paper-image">
+          <p class="fig-caption">
+            <b>Performance across compositional tuning data scales.</b> Fixing the VIT subset at 5% of LLaVA-665K and scaling COMPACT's compositional tuning data from 2K to 32K. COMPACT (solid) consistently outperforms VIT-only baselines (dashed) with far less data. On spatially complex tasks like SeedBench2Plus, COMPACT's 2K model rivals VIT's 32K model.
           </p>
-          <img src="./static/images/compositional_generalization.png" alt="Compositional Generalization to Higher Complexities" class="small-centered-image">
         </div>
-
-        <div class = "content has-text-justified">
-          <p>
-            <b>Performance Across Compositional Tuning Data Scales:</b> We fix the VIT subset (5% of LLaVA-665K) and scale the
-            compositional tuning data in COMPACT from 2K to 32K. For comparison, we remove the compositional tuning data and add more VIT data
-            (2K-32K) instead to prepare VIT only baselines with equal data budgets. With much fewer data, COMPACT (solid lines) consistently outperforms the 
-            VIT only baselines (dashed lines). The performance gap is pronounced for complex reasoning benchmarks such as MM-Vet and MMStar,
-            where the 8K COMPACT model often exceeds the VIT only baseline at 32K. This demonstrates the data efficiency of
-            COMPACT, requiring substantially less data than LLaVA-665K VIT to achieve comparable or better results.
-          </p>
-          <img src="./static/images/compositional_data_scale.png" alt="Performance Across Compositional Tuning Data Scales" class="small-centered-image">
-        </div>
-
       </div>
     </div>
   </div>
 </section>
 
-<section class="section">
+<!-- ── Analysis ── -->
+<section class="section" id="analysis">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Analysis</h2>
+
+        <h3 class="title is-4" style="margin-top: 2rem; color: var(--ink);">COMPACT shifts the complexity distribution</h3>
+        <div class="content has-text-justified">
+          <p>
+            We analyze 5,400 LLaVA-665K questions and 7,200 COMPACT questions with Gemini-2.0-Flash. LLaVA is dominated by easy samples (77% have <em>k</em> ≤ 2); COMPACT redistributes mass toward higher complexity.
+          </p>
+        </div>
+
+        <div class="table-wrap" style="max-width: 720px; margin: 0 auto;">
+          <table class="dist-table">
+            <thead>
+              <tr><th>Statistic</th><th>LLaVA-665K</th><th>COMPACT</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Mean <em>k</em>-value</td><td>1.95</td><td class="compact-val">2.89</td></tr>
+              <tr><td>Mode <em>k</em>-value</td><td>2</td><td class="compact-val">3</td></tr>
+              <tr><td>Samples with <em>k</em> ≤ 2</td><td>77%</td><td class="compact-val">35%</td></tr>
+              <tr><td>Zero-capability (<em>k</em> = 0) samples</td><td>1.1%</td><td class="compact-val">0%</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="title is-4" style="margin-top: 3rem; color: var(--ink);">Zero-capability samples in LLaVA-665K</h3>
+        <div class="content has-text-justified">
+          <p>
+            ~1.1% of LLaVA-665K questions require <b>no visual capabilities at all</b> — they could be answered without looking at the image:
+          </p>
+        </div>
+        <div class="zero-cap-list">
+          <div class="zero-cap-item">"Should I move to London?"</div>
+          <div class="zero-cap-item">"Can you explain Map Reduce to me?"</div>
+          <div class="zero-cap-item">"How to do coding"</div>
+          <div class="zero-cap-item">"I'm looking to create a podcast, can you help me?"</div>
+        </div>
+
+        <h3 class="title is-4" style="margin-top: 3rem; color: var(--ink);">Capability correlation</h3>
+        <div class="image-frame">
+          <img src="./static/images/paper/appendix_capability_correlation.png" alt="Capability correlation heatmap" class="paper-image" style="max-width: 720px;">
+          <p class="fig-caption">
+            <b>Capability correlation.</b> Spatial capabilities (scene understanding, spatial recognition, spatial relationship) are locally correlated; object recognition co-occurs with most other capabilities. This is why sampling <em>k</em><sub>gen</sub> acts as a lower bound on the final <em>k</em>-value.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Ablations ── -->
+<section class="section section-alt" id="ablations">
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
         <h2 class="title is-3">Ablations</h2>
-        
+
+        <div class="content has-text-justified" style="margin-top: 1.5rem;">
+          <p>
+            We dissect COMPACT along four axes: (A) complexity distribution, (B) atomic-capability coverage, (C) instruction-tuning ratio, and (D) the <em>k</em><sub>gen</sub> range used during generation.
+          </p>
+        </div>
+
+        <h3 class="title is-4" style="color: var(--ink); margin-top: 1.5rem;">A. Balanced complexity is what matters</h3>
         <div class="content has-text-justified">
           <p>
-            We conduct a series of ablation studies to investigate key design considerations in COMPACT.         
-          </p>
-          <p>
-            <b>A. Compositional Complexity Distribution:</b> In order to show that the performance improvement of COMPACT mainly comes from the balanced 
-            distribution of compositional complexity in the compositional tuning data, we analyze the impact on the performance when its compositional 
-            complexity is unbalanced. We generate a 16K-sample compositional tuning data whose distribution of k resembles LLaVA-665K VIT data. 
-            The performance of unbalanced COMPACT (96.28%) is close to random baseline. However, the balanced COMPACT (original) performance jumps to 98.83%, 
-            suggesting that most of the performance gain in COMPACT comes from the fair represenation of higher k samples in the dataset.
+            When we force COMPACT's <em>k</em>-distribution to match LLaVA-665K (unbalanced), relative performance drops from <b>98.8%</b> → <b>97.6%</b>, recovering only half of COMPACT's gain over random. <b>At least half of COMPACT's gain comes from higher-complexity samples.</b>
           </p>
         </div>
 
-        <div style="overflow-x: auto;">
-          <table class="table is-bordered is-striped is-hoverable is-fullwidth">
-            <thead>
-              <tr>
-                <th>Recipe</th>
-                <th>#Data</th>
-                <th>InfoVQA</th>
-                <th>SeedBench2Plus</th>
-                <th>MME</th>
-                <th>TextVQA</th>
-                <th>MMVet</th>
-                <th>CV-Bench</th>
-                <th>MMStar</th>
-                <th>LLaVA-W</th>
-                <th>Rel. (%)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>LLaVA-665K VIT</td>
-                <td>665K</td>
-                <td>20.80</td>
-                <td>41.72</td>
-                <td>1478.48</td>
-                <td>46.99</td>
-                <td>29.22</td>
-                <td>60.92</td>
-                <td>35.11</td>
-                <td>68.50</td>
-                <td>100.00</td>
-              </tr>
-              <tr>
-                <td>Random</td>
-                <td>49K</td>
-                <td>20.33</td>
-                <td>42.38</td>
-                <td>1290.45</td>
-                <td>42.22</td>
-                <td>30.18</td>
-                <td>54.75</td>
-                <td>34.30</td>
-                <td>70.50</td>
-                <td>96.28</td>
-              </tr>
-              <tr>
-                <td>Unbalanced COMPACT</td>
-                <td>49K</td>
-                <td>22.28</td>
-                <td>41.17</td>
-                <td>1339.24</td>
-                <td>43.08</td>
-                <td>29.22</td>
-                <td>55.84</td>
-                <td>34.80</td>
-                <td>64.50</td>
-                <td>96.62</td>
-              </tr>
-              <tr>
-                <td>Original COMPACT </td>
-                <td>49K</td>
-                <td>22.68</td>
-                <td>42.82</td>
-                <td>1362.68</td>
-                <td>43.73</td>
-                <td>30.78</td>
-                <td>54.69</td>
-                <td>35.59</td>
-                <td>66.60</td>
-                <td>98.83</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="flex-container">
-          <div class="content has-text-justified" style="flex: 1; padding: 10px;">
-            <p>
-              <b>B. Atomic Capability Coverage:</b> To validate our choice of atomic capabilities and understand their relative importance,
-              we conduct a leave-one-out analysis by systematically excluding questions that require a specific capability while keeping
-              the total number of training examples fixed. The figure shows that each capability contributes meaningfully to overall
-              performance without being redundant. 
-            </p>
-            <img src="./static/images/loo.png" alt="Atomic Capability Coverage" style="width: 100%;">
+        <div class="two-col" style="margin-top: 2.5rem;">
+          <div>
+            <h3 class="title is-4" style="color: var(--ink);">B. All 10 capabilities contribute</h3>
+            <div class="content has-text-justified">
+              <p>
+                Leave-one-out: removing any atomic capability hurts performance. <b>Scene understanding</b> (−5.2) and <b>spatial relationship</b> (−4.9) drive the largest gains; none are redundant.
+              </p>
+            </div>
           </div>
-
-          <div class="content has-text-justified" style="flex: 1; padding: 10px;">
-            <p>
-              <b>C. Instruction Tuning Ratio:</b> We vary the amount of instruction tuning data sampled from LLaVA-665K VIT to understand the impact 
-              of the mixing ratio on model performance. As we scale the VIT subset from 0% (pure compositional tuning) to 7% of LLaVA-665K VIT, 
-              we observe an upward trend with diminishing returns. These results suggest that instruction following capability is potentailly orthogonal to the 
-              capabilities of the base model and the atomic visual capabilities, and can be acquired with minimal instruction tuning data. 
+          <div>
+            <h3 class="title is-4" style="color: var(--ink);">C. Only ~5% VIT is enough</h3>
+            <div class="image-frame">
+              <img src="./static/images/paper/4_vit_ratio.png" alt="Impact of instruction tuning data ratio" class="paper-image">
+            </div>
+            <p class="fig-caption">
+              Instruction-following is <b>orthogonal</b> to visual reasoning — performance stabilizes around a 5% VIT mix with diminishing returns beyond.
             </p>
-            <img src="./static/images/vit_scale.png" alt="VIT Data Ratio" style="width: 100%;">
           </div>
         </div>
 
-        <div class="content has-text-justified">
-          <p>
-            <b>D. Compositional Complexity Range:</b> To isolate the effect of the range of compositional complexities while controlling for data quality,
-            we generate three sets of 16K-sample compositional tuning data, each it k=1, k=1,2 and k=1,2,3. For fair comparison, we maintain consistent
-            sample counts and use identical set of images in all three settings. The model trained on k=1,2,3 outperforms other two settings. 
-            Although the model trained on k=1 data can solve tasks with lower compositional complexity, it does not generalize to higher k tasks.
+        <h3 class="title is-4" style="margin-top: 3rem; color: var(--ink);">D. Wide <em>k</em>-value range is optimal</h3>
+        <div class="image-frame">
+          <img src="./static/images/paper/3_compositional_complexity_range.png" alt="Effect of k-value range" class="paper-image" style="max-width: 720px;">
+          <p class="fig-caption">
+            <b>Effect of <em>k</em><sub>gen</sub> range.</b> Training on <em>k</em><sub>gen</sub> ∈ {1,2,3} outperforms <em>k</em><sub>gen</sub> = 3 alone. Complex samples are most useful <em>in the presence of simpler ones</em> — a range from simple to complex is optimal.
           </p>
-          <div class="has-text-centered">
-            <img src="./static/images/k_range_scale.png" alt="Compositional Complexity Range" style="max-width: 600px; width: 100%;">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Takeaways ── -->
+<section class="section" id="takeaways">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Takeaways</h2>
+        <div class="takeaway-grid" style="margin-top: 1.8rem;">
+          <div class="takeaway">
+            Visual compositional tuning is a <span class="tk-hl">scalable, data-efficient pathway</span> toward multimodal models that can solve multi-capability tasks.
+          </div>
+          <div class="takeaway">
+            <span class="tk-hl">Sample complexity</span>, not volume, drives data-efficient VIT — 10% of the data matches full LLaVA-665K.
+          </div>
+          <div class="takeaway">
+            High-<em>k</em> training <em>transfers</em>: <span class="tk-hl">+33.5%</span> on k=4 test questions. Simple and complex samples together are optimal.
+          </div>
+          <div class="takeaway">
+            Broad generalization, not benchmark overfitting: <span class="tk-hl">Science &amp; Tech +9.9%</span>, <span class="tk-hl">Instance Reasoning +8.1%</span> on MMStar.
           </div>
         </div>
       </div>
@@ -563,81 +786,33 @@
   </div>
 </section>
 
-<section class="section">
+<!-- ── BibTeX ── -->
+<section class="section section-alt" id="bibtex">
   <div class="container is-max-desktop">
-    <div class="columns is-centered has-text-centered">
+    <div class="columns is-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">Quantitative Comparison</h2>
-        
-        <div class="content has-text-justified">
-          <p>
-            We perform a quantitative analysis comparing COMPACT with LLaVA-665K VIT. COMPACT's compositional tuning data has 
-            a more balanced distribution of capabilities compared to LLaVA-665K VIT. In additional, the bar plot below shows the 
-            distribution of compositional complexity in a random subset of LLaVA-665K VIT data. Unlike COMPACT, where the compositional
-            complexity is designed to be balanced, the compositional complexity in LLaVA-665K VIT data shows a complexity cliff, characterized
-            by a lack of higher k samples.
-          </p>
-          <div class="has-text-centered flex-container">
-            <img src="./static/images/heatmap.png" alt="Capability Distribution" style="max-width: 48%;">
-            <img src="./static/images/llava_k_dist.png" alt="Llava k-distribution" style="max-width: 48%;">
-          </div>
-        </div>
+        <h2 class="title is-3 has-text-centered">BibTeX</h2>
+<pre class="bibtex">@article{wu2025compact,
+  title   = {Compact: Compositional atomic-to-complex visual capability tuning},
+  author  = {Wu, Xindi and Hwang, Hee Seung and Kirichenko, Polina and Tureci, Esin and Russakovsky, Olga},
+  journal = {arXiv preprint arXiv:2504.21850},
+  year    = {2025}
+}</pre>
       </div>
     </div>
   </div>
 </section>
 
-<!-- <section class="section">
+<!-- ── Acknowledgements ── -->
+<section class="section" style="padding-top: 1.5rem; padding-bottom: 1.5rem;">
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">Qualitative Comparison</h2>
-        
-        <div class="content has-text-justified">
-          <p>
-            Below we showcase examples that demonstrate the superior performance of our COMPACT model compared to LLaVA-665K VIT,
-            particularly on complex queries requiring multiple capabilities (k ≥ 3).
-          </p>
-
-          <div class="has-text-centered">
-            <img src="./static/images/qualitative_1.png" alt="Qualitative Examples 1" class="small-centered-image">
-          </div>
-          <div class="has-text-centered">
-            <img src="./static/images/qualitative_2.png" alt="Qualitative Examples 2" class="small-centered-image">
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </div>
-</section> -->
-
-<!-- <section class="section" id="BibTeX">
-  <div class="container is-max-desktop content">
-    <h2 class="title">BibTeX</h2>
-    <pre><code>@article{wu2024compact,
-  title={COMPACT: COMPositional Atomic-to-Complex Visual Capability Tuning},
-  author={Wu, Xindi and Hwang, Hee Seung and Kirichenko, Polina and Russakovsky, Olga},
-  journal={arXiv preprint},
-  year={2025}
-}</code></pre>
-  </div>
-</section> -->
-
-<section class="section" style="padding-top: 1rem; padding-bottom: 1rem;">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <div class="box" style="background-color: #f8f9fa; border: 1px solid #e9ecef;">
-          <h2 class="title is-4">Acknowledgements</h2>
-          
+        <div class="box" style="background: #fafafa; border: 1px solid var(--border);">
+          <h2 class="title is-5" style="color: var(--ink);">Acknowledgements</h2>
           <div class="content has-text-justified">
-            <p style="font-size: 0.9em; margin-bottom: 0;">
-              This material is based upon work supported by the National Science Foundation under Grant 2107048 and
-              2112562. Any opinions, findings, and conclusions, or recommendations expressed in this material are those of the author(s) and do
-              not necessarily reflect the views of the National Science Foundation. All experiments, data collection, and processing activities
-              were conducted at Princeton University. Meta was involved solely in an advisory role and no experiments, data collection
-              or processing activities were conducted on Meta infrastructure. We thank Allison Chen for helpful discussions and feedback.
+            <p style="font-size: 0.92rem; margin-bottom: 0;">
+              This material is based upon work supported by the National Science Foundation under Grants 2107048 and 2112562, and Solidigm AI SW. Any opinions, findings, and conclusions, or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation or Solidigm Research. All experiments, data collection, and processing activities were conducted at Princeton University. Meta was involved solely in an advisory role; no experiments, data collection, or processing activities were conducted on Meta infrastructure. We thank Allison Chen, Sanghyuk Chun, and Jihoon Chung for helpful discussions and feedback.
             </p>
           </div>
         </div>
@@ -646,27 +821,26 @@
   </div>
 </section>
 
-<footer class="footer">
+<footer>
   <div class="content has-text-centered">
     <p>
-      <strong>COMPACT</strong> by <a href="https://visualai.princeton.edu/">Princeton University Visual AI Lab</a>
+      <strong>Visual Compositional Tuning (COMPACT)</strong> &middot;
+      <a href="https://visualai.princeton.edu/">Princeton Visual AI Lab</a>
     </p>
   </div>
 </footer>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
-    if ($navbarBurgers.length > 0) {
-      $navbarBurgers.forEach(el => {
-        el.addEventListener('click', () => {
-          const target = el.dataset.target;
-          const $target = document.getElementById(target);
-          el.classList.toggle('is-active');
-          $target.classList.toggle('is-active');
-        });
+    const burgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+    burgers.forEach(el => {
+      el.addEventListener('click', () => {
+        const target = el.dataset.target;
+        const $target = document.getElementById(target);
+        el.classList.toggle('is-active');
+        if ($target) $target.classList.toggle('is-active');
       });
-    }
+    });
   });
 </script>
 </body>
