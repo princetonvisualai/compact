@@ -18,7 +18,7 @@
 
 
 
-Authors: [Xindi Wu](https://xindiwu.github.io/)\*, [Hee Seung Hwang](https://www.linkedin.com/in/willhshwang/)\*, [Polina Kirichenko](https://polkirichenko.github.io/), [Olga Russakovsky](https://www.cs.princeton.edu/~olgarus/)
+Authors: [Xindi Wu](https://xindiwu.github.io/)\*, [Hee Seung Hwang](https://www.linkedin.com/in/willhshwang/)\*, [Polina Kirichenko](https://polkirichenko.github.io/), [Esin Tureci](https://sites.google.com/view/esintureci/home), [Olga Russakovsky](https://www.cs.princeton.edu/~olgarus/)
 
 (* Denotes equal contribution)
 
