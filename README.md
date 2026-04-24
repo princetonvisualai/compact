@@ -10,9 +10,8 @@
 </p>
 <hr>
 
-# COMPACT
+# Visual Compositional Tuning
 
-**Visual Compositional Tuning**
 
 [[paper](https://arxiv.org/abs/2504.21850)][[website](https://princetonvisualai.github.io/compact/)]
 
