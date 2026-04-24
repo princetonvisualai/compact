@@ -12,9 +12,7 @@
 
 # COMPACT
 
-**COMPACT: COMPositional Atomic-to-Complex Visual Capability Tuning**
-
-🚧 Under Construction 🚧
+**Visual Compositional Tuning**
 
 [[paper](https://arxiv.org/abs/2504.21850)][[website](https://princetonvisualai.github.io/compact/)]
 
@@ -26,7 +24,7 @@ Authors: [Xindi Wu](https://xindiwu.github.io/)\*, [Hee Seung Hwang](https://www
 
 We propose COMPACT, a data recipe that scales capabilities of Multimodal Large Language Models (MLLMs) from atomic (k = 1) to complex (k > 1) compositional levels. By creating a training dataset with a balanced distribution of compositional complexity, COMPACT enables models to learn complex capabilities more efficiently.
 
-## News 🔥
+## News 
 - [04/30] We have released the COMPACT data recipe for visual compositional tuning.
 
 ## Table of Contents
@@ -91,7 +89,6 @@ python compact/main.py \
 
 
 ## Training 
-(🚧 Under Construction 🚧)
 
 Train a model with the COMPACT dataset:
 
@@ -101,7 +98,6 @@ sh train_scripts/train_compact.sh
 
 
 ## Evaluation 
-(🚧 Under Construction 🚧)
 
 Evaluate your COMPACT-trained model on various benchmarks:
 
